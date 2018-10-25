@@ -119,16 +119,11 @@ $(function () {
         inputMapper: {
             inputStream: {
                 constraints: function (value) {
-                    if (/^(\d+)x(\d+)$/.test(value)) {
-                        var values = value.split('x');
+
                         return {
-                            width: { min: parseInt(values[0]) },
-                            height: { min: parseInt(values[1]) }
+                            width: { max: 320 },
+                            height: { max: 240 }
                         };
-                    }
-                    return {
-                        deviceId: value
-                    };
                 }
             },
             numOfWorkers: function (value) {
@@ -159,9 +154,7 @@ $(function () {
                 target: document.querySelector('#bcInputView'),
                 constraints: {
                     width: { max: 320 },
-                    height: { max: 240 },
-                    aspectRatio: { min: 1, max: 100 },
-                    facingMode: "environment" // or user
+                    height: { max: 240 }
                 }
             },
             locator: {
