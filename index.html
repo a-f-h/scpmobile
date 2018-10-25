@@ -127,23 +127,6 @@
 							this.applySettingsVisibility('zoom', capabilities.zoom);
 							this.applySettingsVisibility('torch', capabilities.torch);
 						},
-						updateOptionsForMediaRange: function(node, range) {
-							console.log('updateOptionsForMediaRange', node, range);
-							var NUM_STEPS = 6;
-							var stepSize = (range.max - range.min) / NUM_STEPS;
-							var option;
-							var value;
-							while (node.firstChild) {
-								node.removeChild(node.firstChild);
-							}
-							for (var i = 0; i <= NUM_STEPS; i++) {
-								value = range.min + (stepSize * i);
-								option = document.createElement('option');
-								option.value = value;
-								option.innerHTML = value;
-								node.appendChild(option);
-							}
-						},
 						inputMapper: {
 							inputStream: {
 								constraints: function(value){
@@ -175,11 +158,11 @@
 						state: {
 							inputStream: {
 								type : "LiveStream",
-								constraints: {
-									width: {min: 640},
-									height: {min: 480},
-									aspectRatio: {min: 1, max: 100},
-									facingMode: "environment" // or user
+								target: document.querySelector('#bcInputView'),
+								 constraints: {
+									width: 320,
+									height: 240,
+									facingMode: "environment"
 								}
 							},
 							locator: {
