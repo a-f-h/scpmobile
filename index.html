@@ -105,10 +105,103 @@
         (function () {
 
             "use strict";
+			var App = {
+						init : function() {
+							Quagga.init(this.state, function(err) {
+								if (err) {
+									console.log(err);
+									return;
+								}
+								App.attachListeners();
+								App.checkCapabilities();
+								Quagga.start();
+								 initRequest.resolve(true);
+							});
+						},
+						checkCapabilities: function() {
+							var track = Quagga.CameraAccess.getActiveTrack();
+							var capabilities = {};
+							if (typeof track.getCapabilities === 'function') {
+								capabilities = track.getCapabilities();
+							}
+							this.applySettingsVisibility('zoom', capabilities.zoom);
+							this.applySettingsVisibility('torch', capabilities.torch);
+						},
+						updateOptionsForMediaRange: function(node, range) {
+							console.log('updateOptionsForMediaRange', node, range);
+							var NUM_STEPS = 6;
+							var stepSize = (range.max - range.min) / NUM_STEPS;
+							var option;
+							var value;
+							while (node.firstChild) {
+								node.removeChild(node.firstChild);
+							}
+							for (var i = 0; i <= NUM_STEPS; i++) {
+								value = range.min + (stepSize * i);
+								option = document.createElement('option');
+								option.value = value;
+								option.innerHTML = value;
+								node.appendChild(option);
+							}
+						},
+						inputMapper: {
+							inputStream: {
+								constraints: function(value){
+									if (/^(\d+)x(\d+)$/.test(value)) {
+										var values = value.split('x');
+										return {
+											width: {min: parseInt(values[0])},
+											height: {min: parseInt(values[1])}
+										};
+									}
+									return {
+										deviceId: value
+									};
+								}
+							},
+							numOfWorkers: function(value) {
+								return parseInt(value);
+							},
+							  decoder: {
+									readers: ["code_128_reader"],
+									debug: {
+										drawBoundingBox: false,
+										showFrequency: false,
+										drawScanline: false,
+										showPattern: false
+									}
+								}
+						},
+						state: {
+							inputStream: {
+								type : "LiveStream",
+								constraints: {
+									width: {min: 640},
+									height: {min: 480},
+									aspectRatio: {min: 1, max: 100},
+									facingMode: "environment" // or user
+								}
+							},
+							locator: {
+								patchSize: "medium",
+								halfSample: true
+							},
+							numOfWorkers: 2,
+							frequency: 10,
+							decoder: {
+								readers : [{
+									format: "code_128_reader",
+									config: {}
+								}]
+							},
+							locate: true
+						},
+						lastResult : null
+			};
 
             $('#getBarcodeBtn').on('click', function () {
 
-                initBarcode();
+                App.init();
 
                 $.when(initRequest).done(function (success) {
                     if (success === true) {
