@@ -121,8 +121,8 @@ $(function () {
                 constraints: function (value) {
 
                         return {
-                            width: { max: 320 },
-                            height: { max: 240 }
+                            width: { max: 640 },
+                            height: { max: 480 }
                         };
                 }
             },
@@ -153,8 +153,8 @@ $(function () {
                 type: "LiveStream",
                 target: document.querySelector('#bcInputView'),
                 constraints: {
-                    width: { max: 320 },
-                    height: { max: 240 }
+                    width: { max: 640 },
+                    height: { max: 480 }
                 }
             },
             locator: {
